@@ -15,13 +15,13 @@
             <img src="/images/icon.png" alt="OpenRadar" class="w-10 h-10 rounded-lg">
             <button onclick="window.sidebar.toggle()"
                 class="p-1.5 rounded-lg text-base-content/60 hover:text-base-content hover:bg-base-300 transition-colors"
-                title="Expand sidebar">
+                title="Развернуть меню">
                 <i data-lucide="panel-left-open" class="w-4 h-4"></i>
             </button>
         </div>
         <button onclick="window.sidebar.toggle()"
             class="p-2 rounded-lg text-base-content/60 hover:text-base-content hover:bg-base-300 transition-colors sidebar-expanded-only"
-            title="Collapse sidebar">
+            title="Свернуть меню">
             <i data-lucide="panel-left-close" class="w-5 h-5"></i>
         </button>
     </div>
@@ -42,9 +42,9 @@
     <div class="p-4 border-t border-base-content/[0.03] sidebar-expanded-only space-y-2">
         <button id="desktop-shutdown-btn"
             class="btn btn-ghost btn-xs w-full justify-start text-base-content/50 hover:text-error"
-            title="Close OpenRadar">
+            title="Закрыть OpenRadar">
             <i data-lucide="power" class="w-3.5 h-3.5"></i>
-            <span>Close OpenRadar</span>
+            <span>Закрыть OpenRadar</span>
         </button>
         <p class="text-xs text-base-content/50 font-mono">v{{.Version}}</p>
     </div>
@@ -81,9 +81,9 @@
     <div class="absolute bottom-0 left-0 right-0 p-4 border-t border-base-content/[0.03] space-y-2">
         <button id="mobile-shutdown-btn"
             class="btn btn-ghost btn-xs w-full justify-start text-base-content/50 hover:text-error"
-            title="Close OpenRadar">
+            title="Закрыть OpenRadar">
             <i data-lucide="power" class="w-3.5 h-3.5"></i>
-            <span>Close OpenRadar</span>
+            <span>Закрыть OpenRadar</span>
         </button>
         <p class="text-xs text-base-content/50 font-mono">v{{.Version}}</p>
     </div>
@@ -91,13 +91,13 @@
 <script>
 (function() {
     async function shutdownOpenRadar() {
-        if (!confirm('Close OpenRadar on this computer?')) return;
+        if (!confirm('Закрыть OpenRadar на этом компьютере?')) return;
         try {
             const response = await fetch('/api/app/shutdown', {method: 'POST'});
             if (!response.ok) throw new Error(await response.text());
-            document.body.innerHTML = '<div class="min-h-screen flex items-center justify-center bg-base-100 text-base-content"><div class="text-center space-y-3"><h1 class="text-xl font-bold">OpenRadar is closing</h1><p class="text-base-content/60">You can close this browser window.</p></div></div>';
+            document.body.innerHTML = '<div class="min-h-screen flex items-center justify-center bg-base-100 text-base-content"><div class="text-center space-y-3"><h1 class="text-xl font-bold">OpenRadar закрывается</h1><p class="text-base-content/60">Можно закрыть это окно браузера.</p></div></div>';
         } catch (err) {
-            alert('Could not close OpenRadar: ' + err);
+            alert('Не удалось закрыть OpenRadar: ' + err);
         }
     }
 

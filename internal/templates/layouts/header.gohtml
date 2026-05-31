@@ -11,12 +11,12 @@
     <div class="flex items-center gap-3">
         <div id="wsStatusIndicator" class="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-base-content/[0.02]">
             <span id="wsStatusDot" class="status status-neutral"></span>
-            <span id="wsStatusText" class="text-xs text-base-content/50 hidden sm:inline">Connecting...</span>
+            <span id="wsStatusText" class="text-xs text-base-content/50 hidden sm:inline">Подключение...</span>
         </div>
 
         <button id="pipToggleBtn" class="btn btn-primary btn-sm" disabled style="display:none;">
             <i id="pipIcon" data-lucide="picture-in-picture-2" class="w-4 h-4"></i>
-            <span id="pipText" class="hidden sm:inline">PiP Mode</span>
+            <span id="pipText" class="hidden sm:inline">PiP режим</span>
         </button>
     </div>
 </header>
@@ -63,22 +63,22 @@
         switch(status) {
             case 'connected':
                 dot.classList.add('status-success', 'animate-pulse');
-                text.textContent = 'Connected';
+                text.textContent = 'Подключено';
                 text.classList.add('text-base-content/80');
                 break;
             case 'disconnected':
                 dot.classList.add('status-error');
-                text.textContent = 'Disconnected';
+                text.textContent = 'Отключено';
                 text.classList.add('text-error');
                 break;
             case 'connecting':
                 dot.classList.add('status-warning', 'animate-pulse');
-                text.textContent = 'Connecting...';
+                text.textContent = 'Подключение...';
                 text.classList.add('text-warning');
                 break;
             default:
                 dot.classList.add('status-neutral');
-                text.textContent = 'Disconnected';
+                text.textContent = 'Отключено';
                 text.classList.add('text-base-content/60');
         }
     }
@@ -90,12 +90,12 @@
             pipBtn.classList.remove('btn-primary');
             pipBtn.classList.add('btn-secondary');
             pipIcon.setAttribute('data-lucide', 'picture-in-picture');
-            pipText.textContent = 'Exit PiP';
+            pipText.textContent = 'Выйти из PiP';
         } else {
             pipBtn.classList.remove('btn-secondary');
             pipBtn.classList.add('btn-primary');
             pipIcon.setAttribute('data-lucide', 'picture-in-picture-2');
-            pipText.textContent = 'PiP Mode';
+            pipText.textContent = 'PiP режим';
         }
         // Re-render lucide icon
         if (window.lucide) window.lucide.createIcons();

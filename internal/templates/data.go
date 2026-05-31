@@ -28,13 +28,13 @@ type NavItem struct {
 // DefaultNavItems returns the default navigation items for OpenRadar
 func DefaultNavItems() []NavItem {
 	return []NavItem{
-		{Path: "/", Label: "Radar", Icon: "radar"},
-		{Path: "/players", Label: "Players", Icon: "users"},
-		{Path: "/resources", Label: "Resources", Icon: "gem"},
-		{Path: "/enemies", Label: "Enemies", Icon: "skull"},
-		{Path: "/chests", Label: "Chests", Icon: "archive"},
-		{Path: "/ignorelist", Label: "Ignore List", Icon: "user-x"},
-		{Path: "/settings", Label: "Settings", Icon: "settings"},
+		{Path: "/", Label: "Радар", Icon: "radar"},
+		{Path: "/players", Label: "Игроки", Icon: "users"},
+		{Path: "/resources", Label: "Ресурсы", Icon: "gem"},
+		{Path: "/enemies", Label: "Враги", Icon: "skull"},
+		{Path: "/chests", Label: "Сундуки", Icon: "archive"},
+		{Path: "/ignorelist", Label: "Игнор-лист", Icon: "user-x"},
+		{Path: "/settings", Label: "Настройки", Icon: "settings"},
 	}
 }
 

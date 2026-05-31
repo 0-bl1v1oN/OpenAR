@@ -216,13 +216,7 @@ func (s *HTTPServer) setupRoutes() {
 func (s *HTTPServer) renderPage(w http.ResponseWriter, r *http.Request, page string) {
 	// Get page title
 	titles := map[string]string{
-		"radar":      "Radar",
-		"players":    "Players",
-		"resources":  "Resources",
-		"enemies":    "Enemies",
-		"chests":     "Chests",
-		"ignorelist": "Ignore List",
-		"settings":   "Settings",
+		http.Error(w, "Внутренняя ошибка сервера", http.StatusInternalServerError)
 	}
 	title := titles[page]
 	if title == "" && page != "" {
@@ -417,11 +411,11 @@ func (s *HTTPServer) WebSocketHandler() *WebSocketHandler {
 
 func (s *HTTPServer) handleShutdown(w http.ResponseWriter, r *http.Request) {
 	if !isLoopback(r.RemoteAddr) {
-		http.Error(w, "OpenRadar can only be closed from the host PC", http.StatusForbidden)
+		http.Error(w, "OpenRadar можно закрыть только с этого компьютера", http.StatusForbidden)
 		return
 	}
 	if s.shutdownHandler == nil {
-		http.Error(w, "shutdown is not available", http.StatusServiceUnavailable)
+		http.Error(w, "закрытие приложения недоступно", http.StatusServiceUnavailable)
 		return
 	}
 	writeJSON(w, http.StatusOK, map[string]string{"status": "shutting_down"})
