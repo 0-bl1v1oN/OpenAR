@@ -1,0 +1,211 @@
+{{define "layouts/base.gohtml"}}
+<!DOCTYPE html>
+<html data-theme="night" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="page-title">{{.Title}}</title>
+    <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
+
+    <link rel="stylesheet" href="/styles/tailwind.css">
+
+    <script src="/scripts/vendors/lucide.min.js"></script>
+
+    <link rel="stylesheet" href="/styles/app.css">
+    <link rel="stylesheet" href="/styles/components.css">
+
+
+    <!-- Must be defined before modules -->
+    <script>
+        window.onGlobalsReady = function(callback) {
+            if (window.__globalsReady) {
+                callback();
+            } else {
+                document.addEventListener('globalsReady', callback, { once: true });
+            }
+        };
+    </script>
+
+    <script type="module">
+        import { CATEGORIES } from '/scripts/constants/LoggerConstants.js';
+        import settingsSync from '/scripts/utils/SettingsSync.js';
+        import {
+            attachCheckboxListeners,
+            generateResourceGrid,
+            initializeTierButtonStates,
+            updateTierButtonState,
+            selectAllTierEnchants,
+            getResourceStorageKey
+        } from '/scripts/utils/ResourcesHelper.js';
+
+        window.CATEGORIES = CATEGORIES;
+        window.settingsSync = settingsSync;
+        window.ResourcesHelper = {
+            attachCheckboxListeners,
+            generateResourceGrid,
+            initializeTierButtonStates,
+            updateTierButtonState,
+            selectAllTierEnchants,
+            getResourceStorageKey
+        };
+
+        window.__globalsReady = true;
+        document.dispatchEvent(new CustomEvent('globalsReady'));
+    </script>
+
+    <script type="module" src="/scripts/logger.js"></script>
+    <script type="module" src="/scripts/core/PageController.js"></script>
+    <script type="module" src="/scripts/utils/Toast.js"></script>
+    <script type="module" src="/scripts/utils/Modal.js"></script>
+    <script src="/scripts/vendors/htmx.min.js"></script>
+
+    <!-- Must be in head before sidebar template -->
+    <script>
+        window.sidebar = {
+            collapsed: localStorage.getItem('sidebarCollapsed') === 'true',
+            hoverExpanded: false,
+            hoverTimeout: null,
+
+            init() {
+                this.updateClasses();
+                if (window.lucide) lucide.createIcons();
+            },
+
+            toggle() {
+                this.collapsed = !this.collapsed;
+                localStorage.setItem('sidebarCollapsed', this.collapsed);
+                this.updateClasses();
+            },
+
+            onEnter() {
+                if (this.collapsed) {
+                    this.hoverTimeout = setTimeout(() => {
+                        this.hoverExpanded = true;
+                        this.updateClasses();
+                    }, 1000);
+                }
+            },
+
+            onLeave() {
+                if (this.hoverTimeout) {
+                    clearTimeout(this.hoverTimeout);
+                    this.hoverTimeout = null;
+                }
+                this.hoverExpanded = false;
+                this.updateClasses();
+            },
+
+            get isExpanded() {
+                return !this.collapsed || this.hoverExpanded;
+            },
+
+            openMobile() {
+                document.body.classList.add('mobile-menu-open');
+            },
+
+            closeMobile() {
+                document.body.classList.remove('mobile-menu-open');
+            },
+
+            updateClasses() {
+                document.body.classList.toggle('sidebar-collapsed', this.collapsed && !this.hoverExpanded);
+                const sidebar = document.getElementById('desktop-sidebar');
+                if (sidebar) {
+                    sidebar.style.width = this.isExpanded ? '16rem' : '5rem';
+                }
+            }
+        };
+    </script>
+
+    <style>
+        .htmx-swapping { opacity: 0; transition: opacity 50ms ease-out; }
+        #page-content { transition: opacity 50ms ease-in; }
+        #page-content.htmx-settling { opacity: 1; }
+    </style>
+</head>
+<body class="bg-base-100 text-base-content font-display">
+    <div class="flex h-screen">
+        {{template "layouts/sidebar.gohtml" .}}
+
+        <div class="flex-1 flex flex-col overflow-hidden">
+            {{template "layouts/header.gohtml" .}}
+
+            <main id="page-content"
+                  class="flex-1 overflow-y-auto p-2 sm:p-6 bg-base-100"
+                  data-page="{{.Page}}"
+                  hx-swap="innerHTML transition:true"
+                  hx-swap-oob="true">
+                <div class="container mx-auto animate-in">
+                    {{if eq .Page "radar"}}{{template "pages/radar" .}}
+                    {{else if eq .Page "players"}}{{template "pages/players" .}}
+                    {{else if eq .Page "resources"}}{{template "pages/resources" .}}
+                    {{else if eq .Page "enemies"}}{{template "pages/enemies" .}}
+                    {{else if eq .Page "chests"}}{{template "pages/chests" .}}
+                    {{else if eq .Page "ignorelist"}}{{template "pages/ignorelist" .}}
+                    {{else if eq .Page "settings"}}{{template "pages/settings" .}}
+                    {{else}}{{template "pages/radar" .}}{{end}}
+                </div>
+
+                {{if eq .Page "radar"}}{{template "scripts/radar" .}}
+                {{else if eq .Page "players"}}{{template "scripts/players" .}}
+                {{else if eq .Page "resources"}}{{template "scripts/resources" .}}
+                {{else if eq .Page "enemies"}}{{template "scripts/enemies" .}}
+                {{else if eq .Page "chests"}}{{template "scripts/chests" .}}
+                {{else if eq .Page "ignorelist"}}{{template "scripts/ignorelist" .}}
+                {{else if eq .Page "settings"}}{{template "scripts/settings" .}}
+                {{end}}
+            </main>
+        </div>
+    </div>
+
+    <div id="mobile-overlay"
+         onclick="window.sidebar.closeMobile()"
+         class="mobile-menu-overlay fixed inset-0 z-30 bg-black/50 md:hidden">
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => window.sidebar.init());
+
+        // Page lifecycle cleanup - prevents memory leaks on navigation
+        document.addEventListener('htmx:beforeSwap', (e) => {
+            if (e.detail.target?.id === 'page-content') {
+                e.detail.target.style.opacity = '0';
+                // Dispatch cleanup event for page scripts to unregister listeners
+                document.dispatchEvent(new CustomEvent('pageCleanup'));
+            }
+        });
+
+        // Only create icons within swapped content (not globally)
+        document.addEventListener('htmx:afterSwap', (e) => {
+            if (e.detail.target && window.lucide) {
+                // Defer icon creation to next frame to avoid blocking
+                requestAnimationFrame(() => {
+                    lucide.createIcons({ nodes: [e.detail.target] });
+                });
+            }
+        });
+
+        document.addEventListener('htmx:afterSettle', (e) => {
+            if (e.detail.target?.id === 'page-content') {
+                requestAnimationFrame(() => e.detail.target.style.opacity = '1');
+            }
+        });
+
+        // Update sidebar active state on navigation
+        document.addEventListener('htmx:pushedIntoHistory', (_e) => {
+            const currentPath = window.location.pathname;
+            const baseClasses = 'flex items-center gap-3 px-3 py-2.5 rounded-md transition-colors';
+            const activeClasses = 'text-primary border-l-2 border-primary -ml-px pl-2.5';
+            const inactiveClasses = 'text-base-content/60 hover:text-base-content/80 hover:bg-base-content/[0.02]';
+
+            document.querySelectorAll('#desktop-nav a, #mobile-nav a').forEach(link => {
+                const linkPath = link.getAttribute('href');
+                const isActive = linkPath === currentPath;
+
+                link.className = baseClasses + ' ' + (isActive ? activeClasses : inactiveClasses);
+            });
+        });
+    </script>
+</body>
+</html>
+{{end}}

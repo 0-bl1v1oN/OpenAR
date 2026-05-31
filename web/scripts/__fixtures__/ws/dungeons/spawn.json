@@ -1,0 +1,215 @@
+{
+  "scenario": "spawn.json",
+  "handler": "dungeons",
+  "messages": [
+    {
+      "kind": "event",
+      "parameters": {
+        "0": 5798,
+        "1": [
+          -337,
+          -10
+        ],
+        "14": 0,
+        "16": -1,
+        "17": 1,
+        "19": 0,
+        "2": 90,
+        "252": 323,
+        "3": "T5_PORTAL_ROYAL_SOLO",
+        "5": "SWAMP_RED_RANDOM_EXIT_10x10_PORTAL_SOLO_B",
+        "6": 229,
+        "7": true,
+        "8": 0
+      }
+    },
+    {
+      "kind": "event",
+      "parameters": {
+        "0": 5776,
+        "1": [
+          -340,
+          21
+        ],
+        "14": 0,
+        "16": -1,
+        "17": 1,
+        "19": 0,
+        "252": 323,
+        "3": "T5_PORTAL_ROYAL_SOLO",
+        "5": "SWAMP_RED_RANDOM_EXIT_10x10_PORTAL_SOLO_B",
+        "6": 229,
+        "7": true,
+        "8": 0
+      }
+    },
+    {
+      "kind": "event",
+      "parameters": {
+        "0": 5883,
+        "1": [
+          -330,
+          132
+        ],
+        "14": 0,
+        "16": -1,
+        "17": 1,
+        "19": 0,
+        "2": 90,
+        "252": 323,
+        "3": "T5_PORTAL_ROYAL_SOLO",
+        "5": "SWAMP_RED_RANDOM_EXIT_10x10_PORTAL_SOLO_A",
+        "6": 228,
+        "7": true,
+        "8": 0
+      }
+    },
+    {
+      "kind": "event",
+      "parameters": {
+        "0": 12833,
+        "1": [
+          -290,
+          130
+        ],
+        "14": 0,
+        "16": -1,
+        "17": 1,
+        "19": 0,
+        "2": 90,
+        "252": 323,
+        "3": "T5_PORTAL_ROYAL_SOLO",
+        "5": "SWAMP_RED_RANDOM_EXIT_10x10_PORTAL_SOLO_A",
+        "6": 228,
+        "7": true,
+        "8": 0
+      }
+    },
+    {
+      "kind": "event",
+      "parameters": {
+        "0": 5353,
+        "1": [
+          -189,
+          281
+        ],
+        "11": true,
+        "14": 0,
+        "16": -1,
+        "17": 1,
+        "19": 0,
+        "2": 90,
+        "252": 323,
+        "3": "CORRUPTED_SOLO_NONLETHAL",
+        "5": "SWAMP_RED_RANDOM_EXIT_10x10_PORTAL_SOLO_A_CORRUPT",
+        "6": 37,
+        "7": true,
+        "8": 0
+      }
+    },
+    {
+      "kind": "event",
+      "parameters": {
+        "0": 5356,
+        "1": [
+          -190,
+          310
+        ],
+        "11": true,
+        "14": 0,
+        "16": -1,
+        "17": 1,
+        "19": 0,
+        "2": 90,
+        "252": 323,
+        "3": "CORRUPTED_SOLO_NONLETHAL",
+        "5": "SWAMP_RED_RANDOM_EXIT_10x10_PORTAL_SOLO_B_CORRUPT",
+        "6": 38,
+        "7": true,
+        "8": 0
+      }
+    },
+    {
+      "kind": "event",
+      "parameters": {
+        "0": 5884,
+        "1": [
+          -163,
+          303
+        ],
+        "14": 0,
+        "16": -1,
+        "17": 2,
+        "19": 0,
+        "2": 90,
+        "252": 323,
+        "3": "T5_MORGANA",
+        "5": "SWAMP_RED_RANDOM_EXIT_10x10_MOR",
+        "6": 327,
+        "7": true,
+        "8": 0
+      }
+    },
+    {
+      "kind": "event",
+      "parameters": {
+        "0": 5770,
+        "1": [
+          -113,
+          -300
+        ],
+        "14": 0,
+        "16": -1,
+        "17": 1,
+        "19": 0,
+        "2": 90,
+        "252": 323,
+        "3": "T5_PORTAL_ROYAL_SOLO",
+        "5": "SWAMP_RED_RANDOM_EXIT_10x10_PORTAL_SOLO_C",
+        "6": 230,
+        "7": true,
+        "8": 0
+      }
+    },
+    {
+      "kind": "event",
+      "parameters": {
+        "0": 5789,
+        "1": [
+          -77,
+          -297
+        ],
+        "14": 0,
+        "16": -1,
+        "17": 2,
+        "19": 0,
+        "252": 323,
+        "3": "T5_HERETIC",
+        "5": "SWAMP_RED_RANDOM_EXIT_10x10_HER",
+        "6": 293,
+        "7": true,
+        "8": 0
+      }
+    },
+    {
+      "kind": "event",
+      "parameters": {
+        "0": 5789,
+        "1": [
+          -77,
+          -297
+        ],
+        "14": 0,
+        "16": -1,
+        "17": 2,
+        "19": 0,
+        "252": 323,
+        "3": "T5_HERETIC",
+        "5": "SWAMP_RED_RANDOM_EXIT_10x10_HER",
+        "6": 293,
+        "7": true,
+        "8": 0
+      }
+    }
+  ]
+}

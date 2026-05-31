@@ -1,0 +1,59 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v6
+      - uses: ./.github/actions/setup
+
+      - name: Verify test naming convention
+        run: |
+          violations=$(find web/scripts -name '*.test.js' ! -name '_*.test.js' || true)
+          if [ -n "$violations" ]; then
+            echo "ERROR: test files must be prefixed with _ to be excluded from go:embed"
+            echo "$violations"
+            exit 1
+          fi
+
+      - name: Lint Go
+        uses: golangci/golangci-lint-action@v9
+        with:
+          version: v2.12.2
+
+      - name: Lint Frontend
+        run: npm run lint
+
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v6
+      - uses: ./.github/actions/setup
+
+      - name: Test Go
+        run: go test ./...
+
+      - name: Test Frontend
+        run: npm test
+
+  lint-and-test:
+    needs: [lint, test]
+    runs-on: ubuntu-latest
+    timeout-minutes: 1
+    steps:
+      - run: echo "lint + test succeeded"

@@ -1,0 +1,107 @@
+# Logs et fichiers de diagnostic
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+.pnpm-debug.log*
+LOGS.json
+diff_*.txt
+TYPEIDS_SUSPECTS.json
+.browser_opened
+
+# Local-only tooling and configuration
+.serena/
+.claude/
+
+# Diagnostic reports (https://nodejs.org/api/report.html)
+report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
+
+# Caches, outputs de build et artefacts
+coverage
+*.lcov
+.grunt
+bower_components
+build/
+dist/
+app.cjs
+dist.7z
+*.exe
+*.zip
+*.7z
+*.tar.gz
+.optimized
+.npm
+.cache
+.parcel-cache
+.next
+out
+.nuxt
+.web_modules
+.vuepress/dist
+.temp
+.docusaurus
+.serverless/
+.fusebox/
+.dynamodb/
+.tern-port
+.yarn/cache
+.yarn/unplugged
+.yarn/build-state.yml
+.yarn/install-state.gz
+.pnp.*
+
+# Dépendances et modules
+node_modules/
+jspm_packages/
+
+# Fichiers de configuration et historiques
+.env
+.env.development.local
+.env.test.local
+.env.production.local
+.env.local
+.eslintcache
+.stylelintcache
+*.tsbuildinfo
+.lock-wscript
+.node_repl_history
+*.pid
+*.seed
+*.pid.lock
+
+# Fichiers de test, pack, REPL, etc.
+*.tgz
+.yarn-integrity
+server-scripts/ip.txt
+
+# IDE
+.idea/
+.vscode/
+
+# Build artifacts
+tmp/
+ip.txt
+nul
+VERSION
+web/styles/tailwind.css
+
+# Packages et helpers
+ZIP PACKAGE/
+HELPER PACKAGE/
+
+# Serena MCP local memories (kept out of git)
+/.serena/memories/project_summary.md
+/.serena/memories/style_and_conventions.md
+/.serena/memories/suggested_commands.md
+/.serena/.gitignore
+/.serena/project.yml
+/cmd/radar/resource.syso
+
+# Claude-specific files (local only, never commit)
+/CLAUDE.md
+
+# Local full-session Photon captures (never committed, always anonymized then split)
+captures/
+/network.json

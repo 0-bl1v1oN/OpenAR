@@ -1,0 +1,37 @@
+{
+  "scenario": "change-cluster.json",
+  "handler": "router",
+  "messages": [
+    {
+      "kind": "response",
+      "parameters": {
+        "0": "0000",
+        "253": 41
+      }
+    },
+    {
+      "kind": "response",
+      "parameters": {
+        "0": "0006",
+        "253": 41,
+        "255": 4
+      }
+    },
+    {
+      "kind": "response",
+      "parameters": {
+        "0": "0007",
+        "253": 41,
+        "255": 18
+      }
+    },
+    {
+      "kind": "response",
+      "parameters": {
+        "0": "0000",
+        "253": 41,
+        "255": 39
+      }
+    }
+  ]
+}

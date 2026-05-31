@@ -1,0 +1,46 @@
+{
+  "scenario": "change-state.json",
+  "handler": "mobs",
+  "messages": [
+    {
+      "kind": "event",
+      "parameters": {
+        "0": 4598,
+        "1": 1,
+        "252": 47
+      }
+    },
+    {
+      "kind": "event",
+      "parameters": {
+        "0": 4704,
+        "1": 1,
+        "252": 47
+      }
+    },
+    {
+      "kind": "event",
+      "parameters": {
+        "0": 4399,
+        "1": 1,
+        "252": 47
+      }
+    },
+    {
+      "kind": "event",
+      "parameters": {
+        "0": 4376,
+        "1": 1,
+        "252": 47
+      }
+    },
+    {
+      "kind": "event",
+      "parameters": {
+        "0": 4406,
+        "1": 1,
+        "252": 47
+      }
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "scenario": "spawn.json",
+  "handler": "chests",
+  "messages": [
+    {
+      "kind": "event",
+      "parameters": {
+        "0": 5389,
+        "1": [
+          311.5,
+          -345.5
+        ],
+        "15": 1,
+        "17": true,
+        "18": "KEEPER_DYNAMIC_CAMP_PERSONAL_SMALL",
+        "2": 532,
+        "21": -1,
+        "22": true,
+        "23": 4,
+        "24": 639121053675008185,
+        "252": 391,
+        "29": 0,
+        "3": "KEEPER_DYNAMIC_CAMP_PERSONAL_SMALL_LC",
+        "31": 0,
+        "4": "SWAMP_RED_LOOTCHEST_DYNAMIC_CAMP_KEEPER_SMALL",
+        "5": 4,
+        "6": 639121036947342069,
+        "7": 639121053675008185
+      }
+    }
+  ]
+}

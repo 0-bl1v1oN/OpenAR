@@ -1,0 +1,72 @@
+# Consumed by `git-cliff` in the Makefile and release.yml workflow.
+# Produces a medium-rich release body: header (title + intro), grouped
+# commits with emojis + commit links, and a footer (verification,
+# requirements, full changelog link).
+
+[changelog]
+header = ""
+body = """
+{% set repo_url = "https://github.com/Nouuu/Albion-Online-OpenRadar" -%}
+
+Real-time radar for Albion Online.
+
+{% for group, commits in commits | group_by(attribute="group") -%}
+{%- if group == "Features" -%}
+### ✨ Features
+{% elif group == "Bug fixes" -%}
+### 🐛 Bug Fixes
+{% elif group == "Performance" -%}
+### ⚡ Performance
+{% else -%}
+### {{ group }}
+{% endif %}
+{% for commit in commits -%}
+- {{ commit.message | split(pat="\\n") | first | trim }} ([{{ commit.id | truncate(length=7, end="") }}]({{ repo_url }}/commit/{{ commit.id }}))
+{% endfor %}
+{% endfor %}
+---
+
+### Verification
+
+```bash
+sha256sum -c checksums-sha256.txt
+```
+
+### Requirements
+
+**Windows:** Windows 10/11 (64-bit), [Npcap 1.87+](https://npcap.com/)
+
+**Linux:** libpcap (`apt install libpcap0.8`)
+
+---
+{% if previous.version and version -%}
+**Full Changelog**: {{ repo_url }}/compare/{{ previous.version }}...{{ version }}
+{%- endif %}
+"""
+trim = true
+postprocessors = [
+  { pattern = '\z', replace = "\n" },
+]
+
+[git]
+conventional_commits = true
+filter_unconventional = true
+split_commits = false
+commit_parsers = [
+  { message = "^feat", group = "Features" },
+  { message = "^fix", group = "Bug fixes" },
+  { message = "^perf", group = "Performance" },
+  { message = "^docs", skip = true },
+  { message = "^test", skip = true },
+  { message = "^ci", skip = true },
+  { message = "^build", skip = true },
+  { message = "^chore", skip = true },
+  { message = "^style", skip = true },
+  { message = "^refactor", skip = true },
+  { message = "^Merge", skip = true },
+]
+filter_commits = false
+tag_pattern = "v?[0-9]+\\.[0-9]+\\.[0-9]+"
+ignore_tags = ""
+topo_order = false
+sort_commits = "oldest"

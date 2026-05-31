@@ -1,0 +1,30 @@
+{
+  "scenario": "faction-change.json",
+  "handler": "players",
+  "messages": [
+    {
+      "kind": "event",
+      "parameters": {
+        "0": 9822,
+        "1": 5,
+        "252": 363
+      }
+    },
+    {
+      "kind": "event",
+      "parameters": {
+        "0": 10006,
+        "1": 5,
+        "252": 363
+      }
+    },
+    {
+      "kind": "event",
+      "parameters": {
+        "0": 15670,
+        "1": 5,
+        "252": 363
+      }
+    }
+  ]
+}

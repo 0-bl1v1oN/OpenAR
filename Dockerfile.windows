@@ -1,0 +1,46 @@
+# Cross-compile OpenRadar Windows .exe from Linux using mingw-w64.
+# The Npcap SDK provides headers + import libs needed by google/gopacket.
+# Runtime still requires Npcap installed on the end user's Windows machine.
+#
+# Usage:
+#   docker build -f Dockerfile.windows -o dist/ \
+#     --build-arg VERSION=x.y.z --build-arg BUILD_TIME=2026-04-15T12:00:00Z .
+
+FROM golang:1.26-bookworm AS builder
+
+ARG VERSION=dev
+ARG BUILD_TIME=unknown
+ARG NPCAP_SDK_VERSION=1.16
+
+WORKDIR /app
+
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        gcc-mingw-w64-x86-64 \
+        ca-certificates \
+        curl \
+        unzip && \
+    rm -rf /var/lib/apt/lists/*
+
+RUN curl -fsSL "https://npcap.com/dist/npcap-sdk-${NPCAP_SDK_VERSION}.zip" -o /tmp/npcap-sdk.zip && \
+    mkdir -p /opt/npcap-sdk && \
+    unzip -q /tmp/npcap-sdk.zip -d /opt/npcap-sdk && \
+    rm /tmp/npcap-sdk.zip
+
+COPY go.mod go.sum ./
+RUN go mod download
+
+COPY . .
+
+ENV CGO_ENABLED=1 \
+    GOOS=windows \
+    GOARCH=amd64 \
+    CC=x86_64-w64-mingw32-gcc \
+    CGO_CFLAGS="-I/opt/npcap-sdk/Include" \
+    CGO_LDFLAGS="-L/opt/npcap-sdk/Lib/x64 -lwpcap"
+
+RUN go build -ldflags="-s -w -X main.Version=${VERSION} -X main.BuildTime=${BUILD_TIME}" \
+    -o /out/OpenRadar-windows-amd64.exe ./cmd/radar
+
+FROM scratch
+COPY --from=builder /out/OpenRadar-windows-amd64.exe /

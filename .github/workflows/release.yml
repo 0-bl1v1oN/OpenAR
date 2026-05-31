@@ -1,0 +1,190 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v[0-9]+.[0-9]+.[0-9]+*"
+      - "[0-9]+.[0-9]+.[0-9]+*"
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Tag to release (e.g. 2.2.0)"
+        required: true
+        type: string
+
+concurrency:
+  group: release-${{ github.ref_name }}
+  cancel-in-progress: false
+
+env:
+  VERSION: ${{ github.event.inputs.tag || github.ref_name }}
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v6
+      - uses: ./.github/actions/setup
+
+      - name: Lint Go
+        uses: golangci/golangci-lint-action@v9
+        with:
+          version: v2.12.2
+
+      - name: Lint Frontend
+        run: npm run lint
+
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v6
+      - uses: ./.github/actions/setup
+
+      - name: Test Go
+        run: go test ./...
+
+      - name: Test Frontend
+        run: npm test
+
+  build:
+    needs: [lint, test]
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - uses: ./.github/actions/setup
+        with:
+          fetch-depth: "0"
+
+      - uses: docker/setup-buildx-action@v4
+
+      - name: Build all artifacts
+        run: make all-in-one VERSION=${{ env.VERSION }}
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: dist
+          path: dist/
+          retention-days: 1
+
+  enhance-windows:
+    needs: build
+    runs-on: windows-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v6
+      - uses: ./.github/actions/setup
+
+      - name: Prepare embedded assets
+        shell: bash
+        run: |
+          npm run build
+          npx tsx tools/compress-game-data.ts web/ao-bin-dumps --delete-originals
+
+      - name: Install goversioninfo
+        run: go install github.com/josephspurrier/goversioninfo/cmd/goversioninfo@latest
+
+      - name: Generate versioninfo.json
+        shell: pwsh
+        run: |
+          $version = "${{ env.VERSION }}"
+          $parts = $version -split '[.\-]'
+          $major = if ($parts[0] -match '^\d+$') { [int]$parts[0] } else { 0 }
+          $minor = if ($parts.Length -gt 1 -and $parts[1] -match '^\d+$') { [int]$parts[1] } else { 0 }
+          $patch = if ($parts.Length -gt 2 -and $parts[2] -match '^\d+$') { [int]$parts[2] } else { 0 }
+          $json = @{
+            FixedFileInfo = @{
+              FileVersion    = @{ Major = $major; Minor = $minor; Patch = $patch; Build = 0 }
+              ProductVersion = @{ Major = $major; Minor = $minor; Patch = $patch; Build = 0 }
+            }
+            StringFileInfo = @{
+              FileDescription = "OpenRadar - Albion Online Radar"
+              FileVersion     = $version
+              ProductName     = "OpenRadar"
+              ProductVersion  = $version
+              LegalCopyright  = "MIT License"
+            }
+            IconPath = "../../web/images/favicon.ico"
+          } | ConvertTo-Json -Depth 10
+          $json | Out-File -FilePath cmd/radar/versioninfo.json -Encoding UTF8
+
+      - name: Generate Windows resources
+        run: goversioninfo -64
+        working-directory: cmd/radar
+
+      - name: Build Windows binary with embedded resources
+        shell: bash
+        env:
+          CGO_ENABLED: "1"
+        run: |
+          BUILD_TIME=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+          mkdir -p dist
+          go build \
+            -ldflags="-s -w -X main.Version=${VERSION} -X main.BuildTime=${BUILD_TIME}" \
+            -o dist/OpenRadar-windows-amd64.exe ./cmd/radar
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: windows-enhanced
+          path: dist/OpenRadar-windows-amd64.exe
+          retention-days: 1
+
+  release:
+    needs: [build, enhance-windows]
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - uses: actions/download-artifact@v7
+        with:
+          name: dist
+          path: dist
+
+      - name: Overlay enhanced Windows .exe
+        uses: actions/download-artifact@v7
+        with:
+          name: windows-enhanced
+          path: dist
+
+      - name: Regenerate checksums (Windows .exe changed)
+        working-directory: dist
+        run: sha256sum OpenRadar-linux-amd64 OpenRadar-windows-amd64.exe README-linux.txt README-windows.txt > checksums-sha256.txt
+
+      - name: Generate release notes
+        uses: orhun/git-cliff-action@v4
+        with:
+          config: cliff.toml
+          args: --latest
+        env:
+          OUTPUT: dist/RELEASE.md
+
+      - name: Create draft release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release create "${{ env.VERSION }}" \
+            --draft \
+            --title "OpenRadar v${{ env.VERSION }}" \
+            --notes-file dist/RELEASE.md \
+            dist/OpenRadar-linux-amd64 \
+            dist/OpenRadar-windows-amd64.exe \
+            dist/README-linux.txt \
+            dist/README-windows.txt \
+            dist/checksums-sha256.txt
