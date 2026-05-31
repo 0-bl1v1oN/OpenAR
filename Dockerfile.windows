@@ -42,5 +42,9 @@ ENV CGO_ENABLED=1 \
 RUN go build -ldflags="-s -w -X main.Version=${VERSION} -X main.BuildTime=${BUILD_TIME}" \
     -o /out/OpenRadar-windows-amd64.exe ./cmd/radar
 
-FROM scratch
+RUN go build -ldflags="-s -w -H=windowsgui -X main.Version=${VERSION} -X main.BuildTime=${BUILD_TIME} -X main.DefaultDesktop=true" \
+    -o /out/OpenRadar-windows-desktop-amd64.exe ./cmd/radar
+
+    FROM scratch
 COPY --from=builder /out/OpenRadar-windows-amd64.exe /
+COPY --from=builder /out/OpenRadar-windows-desktop-amd64.exe /

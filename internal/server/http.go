@@ -30,11 +30,12 @@ type HTTPServer struct {
 	sounds  fs.FS
 	styles  fs.FS
 	// Template engine
-	tmpl        *templates.Engine
-	version     string
-	devMode     bool
-	networkAPI  *NetworkAPI
-	settingsAPI *SettingsAPI
+	tmpl            *templates.Engine
+	version         string
+	devMode         bool
+	networkAPI      *NetworkAPI
+	settingsAPI     *SettingsAPI
+	shutdownHandler func()
 }
 
 // NewHTTPServer creates a new HTTP server with embedded assets (production mode)
@@ -142,6 +143,12 @@ func NewHTTPServerDev(
 	return s, nil
 }
 
+// SetShutdownHandler registers a callback invoked by the local-only shutdown API.
+func (s *HTTPServer) SetShutdownHandler(fn func()) {
+	s.shutdownHandler = fn
+}
+
+
 // setupRoutes configures all HTTP routes
 func (s *HTTPServer) setupRoutes() {
 	// Cache durations. Dev mode disables scripts/styles caching so JS/CSS edits
@@ -198,6 +205,7 @@ func (s *HTTPServer) setupRoutes() {
 	)
 
 	// API endpoints
+	s.mux.HandleFunc("POST /api/app/shutdown", s.handleShutdown)
 	s.settingsAPI.Register(s.mux)
 	if s.networkAPI != nil {
 		s.networkAPI.Register(s.mux)
@@ -405,4 +413,17 @@ func (s *HTTPServer) Shutdown(ctx context.Context) error {
 // WebSocketHandler returns the WebSocket handler for broadcasting
 func (s *HTTPServer) WebSocketHandler() *WebSocketHandler {
 	return s.wsHandler
+}
+
+func (s *HTTPServer) handleShutdown(w http.ResponseWriter, r *http.Request) {
+	if !isLoopback(r.RemoteAddr) {
+		http.Error(w, "OpenRadar can only be closed from the host PC", http.StatusForbidden)
+		return
+	}
+	if s.shutdownHandler == nil {
+		http.Error(w, "shutdown is not available", http.StatusServiceUnavailable)
+		return
+	}
+	writeJSON(w, http.StatusOK, map[string]string{"status": "shutting_down"})
+	go s.shutdownHandler()
 }

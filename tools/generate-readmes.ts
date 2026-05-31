@@ -63,21 +63,24 @@ No external dependencies besides Npcap are required.
    Download: https://npcap.com/
    Direct link (v1.84): https://npcap.com/dist/npcap-1.84.exe
 
-2. **Launch ${exeName}**
-   Double-click on ${exeName}
+2. **Launch OpenRadar**
+   - Double-click on \`OpenRadar-windows-desktop-amd64.exe\` for the desktop-style app. It opens the radar automatically in a browser app window and does not show a console.
+   - Or double-click on \`${exeName}\` for the classic console dashboard.
 
 3. **Select your network adapter**
    Choose the adapter you use to connect to the Internet
    (DO NOT choose 127.0.0.1 or localhost)
 
 4. **Access the radar**
-   Open http://localhost:5001 in your browser
+   The desktop-style app opens http://localhost:5001 automatically. With the classic console build, open http://localhost:5001 in your browser.
 
 ## Command-line Options
 
-  ${exeName} -version     Show version information
-  ${exeName} -ip X.X.X.X  Skip adapter selection prompt
-  ${exeName} -dev         Development mode (read files from disk)
+  ${exeName} -version       Show version information
+  ${exeName} -ip X.X.X.X    Skip adapter selection prompt
+  ${exeName} -dev           Development mode (read files from disk)
+  ${exeName} -open-browser  Open http://localhost:5001 after startup
+  ${exeName} -desktop       Run without the terminal dashboard and open a browser app window
 
 ## Prerequisites
 
@@ -91,7 +94,7 @@ Verify the integrity using the checksums file:
 
   certutil -hashfile ${exeName} SHA256
 
-Compare with checksums-sha256.txt from the release.
+Compare with checksums-sha256.txt from the release. The release contains both \`OpenRadar-windows-amd64.exe\` and \`OpenRadar-windows-desktop-amd64.exe\`.
 
 ## Support
 

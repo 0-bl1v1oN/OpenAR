@@ -27,7 +27,7 @@ DIST := dist
         install-tools assets restore-assets refresh-assets \
         update-ao-data download-icons download-spells download-map \
         refresh-codes gen-codes \
-        build-linux build-windows readmes checksums all-in-one \
+        build-linux build-windows build-windows-desktop readmes checksums all-in-one \
         release release-dry-run
 
 .DEFAULT_GOAL := help
@@ -49,6 +49,7 @@ help: ## Display help
 	@echo "  restore-assets    Restore source tree after assets step"
 	@echo "  build-linux       Build Linux binary (native on Linux, Docker elsewhere)"
 	@echo "  build-windows     Build Windows .exe (native on Windows, Docker elsewhere)"
+	@echo "  build-windows-desktop Build Windows no-console desktop-style .exe"
 	@echo "  all-in-one        assets + both binaries + READMEs + checksums + restore"
 	@echo ""
 	@echo "Assets refresh (committed to repo):"
@@ -186,17 +187,27 @@ else
 		--build-arg VERSION=$(VERSION) --build-arg BUILD_TIME=$(BUILD_TIME) .
 endif
 
+build-windows-desktop: | $(DIST) ## Build Windows no-console desktop-style .exe
+ifneq (,$(findstring mingw,$(HOST_OS))$(findstring msys,$(HOST_OS)))
+	CGO_ENABLED=1 GOOS=windows GOARCH=amd64 \
+		go build -ldflags="$(LDFLAGS) -H=windowsgui -X main.DefaultDesktop=true" -o $(DIST)/OpenRadar-windows-desktop-amd64.exe ./cmd/radar
+else
+	docker build -f Dockerfile.windows -o $(DIST)/ \
+		--build-arg VERSION=$(VERSION) --build-arg BUILD_TIME=$(BUILD_TIME) .
+endif
+
 readmes: | $(DIST) ## Generate platform-specific README files
 	npx tsx tools/generate-readmes.ts --output-dir=$(DIST) --version=$(VERSION)
 
 checksums: | $(DIST) ## Generate SHA256 checksums for dist/ contents
-	cd $(DIST) && sha256sum OpenRadar-linux-amd64 OpenRadar-windows-amd64.exe README-linux.txt README-windows.txt > checksums-sha256.txt
+	cd $(DIST) && sha256sum OpenRadar-linux-amd64 OpenRadar-windows-amd64.exe OpenRadar-windows-desktop-amd64.exe README-linux.txt README-windows.txt > checksums-sha256.txt
 
 all-in-one: ## Full release artifacts (both binaries + READMEs + checksums)
 	trap '$(MAKE) restore-assets' EXIT; \
 	$(MAKE) assets && \
 	$(MAKE) build-linux && \
 	$(MAKE) build-windows && \
+	$(MAKE) build-windows-desktop && \
 	$(MAKE) readmes && \
 	$(MAKE) checksums
 	@echo ""
@@ -228,6 +239,7 @@ endif
 		--notes-file $(DIST)/RELEASE.md \
 		$(DIST)/OpenRadar-linux-amd64 \
 		$(DIST)/OpenRadar-windows-amd64.exe \
+		$(DIST)/OpenRadar-windows-desktop-amd64.exe \
 		$(DIST)/README-linux.txt \
 		$(DIST)/README-windows.txt \
 		$(DIST)/checksums-sha256.txt

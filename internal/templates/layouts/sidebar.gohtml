@@ -39,7 +39,13 @@
         {{end}}
     </nav>
 
-    <div class="p-4 border-t border-base-content/[0.03] sidebar-expanded-only">
+    <div class="p-4 border-t border-base-content/[0.03] sidebar-expanded-only space-y-2">
+        <button id="desktop-shutdown-btn"
+            class="btn btn-ghost btn-xs w-full justify-start text-base-content/50 hover:text-error"
+            title="Close OpenRadar">
+            <i data-lucide="power" class="w-3.5 h-3.5"></i>
+            <span>Close OpenRadar</span>
+        </button>
         <p class="text-xs text-base-content/50 font-mono">v{{.Version}}</p>
     </div>
 </aside>
@@ -72,8 +78,33 @@
         {{end}}
     </nav>
 
-    <div class="absolute bottom-0 left-0 right-0 p-4 border-t border-base-content/[0.03]">
+    <div class="absolute bottom-0 left-0 right-0 p-4 border-t border-base-content/[0.03] space-y-2">
+        <button id="mobile-shutdown-btn"
+            class="btn btn-ghost btn-xs w-full justify-start text-base-content/50 hover:text-error"
+            title="Close OpenRadar">
+            <i data-lucide="power" class="w-3.5 h-3.5"></i>
+            <span>Close OpenRadar</span>
+        </button>
         <p class="text-xs text-base-content/50 font-mono">v{{.Version}}</p>
     </div>
 </aside>
+<script>
+(function() {
+    async function shutdownOpenRadar() {
+        if (!confirm('Close OpenRadar on this computer?')) return;
+        try {
+            const response = await fetch('/api/app/shutdown', {method: 'POST'});
+            if (!response.ok) throw new Error(await response.text());
+            document.body.innerHTML = '<div class="min-h-screen flex items-center justify-center bg-base-100 text-base-content"><div class="text-center space-y-3"><h1 class="text-xl font-bold">OpenRadar is closing</h1><p class="text-base-content/60">You can close this browser window.</p></div></div>';
+        } catch (err) {
+            alert('Could not close OpenRadar: ' + err);
+        }
+    }
+
+    for (const id of ['desktop-shutdown-btn', 'mobile-shutdown-btn']) {
+        const btn = document.getElementById(id);
+        if (btn) btn.addEventListener('click', shutdownOpenRadar);
+    }
+})();
+</script>
 {{end}}

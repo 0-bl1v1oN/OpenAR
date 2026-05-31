@@ -27,6 +27,8 @@ import (
 var (
 	Version   = "dev"
 	BuildTime = "unknown"
+	// DefaultDesktop is set to "true" by the Windows desktop build.
+	DefaultDesktop = "false"
 )
 
 const (
@@ -114,6 +116,13 @@ func runApp(cfg Config) bool {
 		exitWithError("Failed to create app", err)
 	}
 
+	app.httpServer.SetShutdownHandler(func() {
+		app.cancel()
+		if app.program != nil {
+			app.program.Quit()
+		}
+	})
+
 	if err := manager.Reconfigure(target); err != nil {
 		logger.PrintWarn("NET", "Some interfaces failed to open: %v", err)
 	}
@@ -127,8 +136,10 @@ func runApp(cfg Config) bool {
 		}
 	}
 
-	dashboard := ui.NewDashboard(Version, serverPort, cfg.devMode, capture.LANAddresses(), nil)
-	app.program = tea.NewProgram(dashboard, tea.WithAltScreen())
+	if !cfg.desktopMode {
+		dashboard := ui.NewDashboard(Version, serverPort, cfg.devMode, capture.LANAddresses(), nil)
+		app.program = tea.NewProgram(dashboard, tea.WithAltScreen())
+	}
 
 	app.startCaptureStatePoll()
 
@@ -136,13 +147,15 @@ func runApp(cfg Config) bool {
 	restartRequested := false
 
 	// Set up log callback to send logs to dashboard
-	logger.SetLogCallback(func(level, tag, message string) {
-		app.program.Send(ui.LogMsg{
-			Level:   level,
-			Tag:     tag,
-			Message: message,
+	if app.program != nil {
+		logger.SetLogCallback(func(level, tag, message string) {
+			app.program.Send(ui.LogMsg{
+				Level:   level,
+				Tag:     tag,
+				Message: message,
+			})
 		})
-	})
+	}
 
 	// Start servers in background (will also print session info)
 	go app.startServers()
@@ -150,16 +163,24 @@ func runApp(cfg Config) bool {
 	// Start stats updater
 	go app.updateStats()
 
-	// Run dashboard (blocking)
-	model, err := app.program.Run()
-	if err != nil {
-		logger.ClearLogCallback()
-		fmt.Printf("Dashboard error: %v\n", err)
+	if cfg.openBrowser || cfg.desktopMode {
+		go app.openRadarInBrowser(cfg.appWindow)
 	}
 
-	// Check if restart was requested
-	if d, ok := model.(ui.Dashboard); ok {
-		restartRequested = d.RestartRequested()
+	if cfg.desktopMode {
+		app.waitForShutdownSignal()
+	} else {
+		// Run dashboard (blocking)
+		model, err := app.program.Run()
+		if err != nil {
+			logger.ClearLogCallback()
+			fmt.Printf("Dashboard error: %v\n", err)
+		}
+
+		// Check if restart was requested
+		if d, ok := model.(ui.Dashboard); ok {
+			restartRequested = d.RestartRequested()
+		}
 	}
 
 	// Cleanup
@@ -174,6 +195,9 @@ type Config struct {
 	devMode     bool
 	showVersion bool
 	ipAddr      string
+	openBrowser bool
+	appWindow   bool
+	desktopMode bool
 }
 
 func parseFlags() Config {
@@ -181,7 +205,14 @@ func parseFlags() Config {
 	flag.BoolVar(&cfg.devMode, "dev", false, "Run in development mode (read files from disk)")
 	flag.BoolVar(&cfg.showVersion, "version", false, "Show version information")
 	flag.StringVar(&cfg.ipAddr, "ip", "", "Network adapter IP address (skip interactive prompt)")
+	flag.BoolVar(&cfg.openBrowser, "open-browser", false, "Open http://localhost:5001 after startup")
+	flag.BoolVar(&cfg.appWindow, "app-window", false, "Open the radar in a browser app window when supported")
+	flag.BoolVar(&cfg.desktopMode, "desktop", DefaultDesktop == "true", "Run without the terminal dashboard and open the radar as a desktop-style browser app")
 	flag.Parse()
+	if cfg.desktopMode {
+		cfg.openBrowser = true
+		cfg.appWindow = true
+	}
 	return cfg
 }
 

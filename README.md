@@ -37,10 +37,10 @@ reading.
 ### Windows
 
 1. Install **[Npcap](https://npcap.com/#download)** (required for packet capture).
-2. Download `OpenRadar-windows-amd64.exe` from [Releases](https://github.com/Nouuu/Albion-Online-OpenRadar/releases).
-3. Run it. The radar auto-selects your active LAN interfaces; the startup banner prints both the localhost URL and a `http://<your-lan-ip>:5001 (LAN)` URL when one is available.
-4. Open **http://localhost:5001** in your browser, or the LAN URL from a phone or second device on the same network.
-5. Launch Albion and start playing. To change which interfaces the radar listens on, open the **Settings -> Network** page.
+2. Download `OpenRadar-windows-desktop-amd64.exe` from [Releases](https://github.com/Nouuu/Albion-Online-OpenRadar/releases) for the desktop-style launcher, or `OpenRadar-windows-amd64.exe` for the classic console dashboard.
+3. Run it. The desktop build opens the radar automatically in a browser app window; the classic build prints both the localhost URL and a `http://<your-lan-ip>:5001 (LAN)` URL when one is available.
+4. Use **http://localhost:5001** in your browser, or the LAN URL from a phone or second device on the same network.
+5. Launch Albion and start playing. To change which interfaces the radar listens on, open the **Settings -> Network** page. Use **Close OpenRadar** in the sidebar when you are done.
 
 ### Linux
 
@@ -62,6 +62,8 @@ sudo setcap cap_net_raw=eip ./OpenRadar-linux-amd64
 OpenRadar -version       # Show version
 OpenRadar -ip X.X.X.X    # One-shot interface override by IP (does not write network.json)
 OpenRadar -dev           # Development mode (read files from disk)
+OpenRadar -open-browser  # Open http://localhost:5001 after startup
+OpenRadar -desktop       # No terminal dashboard; open a browser app window
 ```
 
 Persistent interface selection lives in `network.json` next to the binary. Edit it from the **Settings -> Network** page in the browser, or by hand for headless setups.
