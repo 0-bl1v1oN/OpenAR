@@ -5,38 +5,38 @@
         <div class="card-body">
             <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                 <div>
-                    <h1 class="text-3xl font-bold text-base-content">Enemies</h1>
-                    <p class="text-base-content/60 mt-2">Configure enemy and mob detection settings.</p>
+                    <h1 class="text-3xl font-bold text-base-content">Враги</h1>
+                    <p class="text-base-content/60 mt-2">Настройка обнаружения врагов и мобов.</p>
                 </div>
                 <!-- Preset Buttons -->
                 <div class="flex flex-wrap items-center gap-2">
-                    <button onclick="applyEnemyPreset('all')" class="btn btn-primary btn-xs">All</button>
+                    <button onclick="applyEnemyPreset('all')" class="btn btn-primary btn-xs">Все</button>
                     <div class="join">
-                        <button onclick="applyEnemyPreset('bosses')" class="btn btn-secondary btn-xs join-item">Bosses
+                        <button onclick="applyEnemyPreset('bosses')" class="btn btn-secondary btn-xs join-item">Боссы
                         </button>
                         <button onclick="applyEnemyPreset('miniboss')" class="btn btn-secondary btn-xs join-item">
-                            Mini-Boss+
+                            Мини-босс+
                         </button>
                     </div>
-                    <button onclick="applyEnemyPreset('clear')" class="btn btn-error btn-xs">Clear</button>
+                    <button onclick="applyEnemyPreset('clear')" class="btn btn-error btn-xs">Очистить</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Classic Enemies -->
+    <!-- Обычные враги -->
     <div class="collapse collapse-arrow bg-base-200 rounded-xl">
         <input type="checkbox" id="collapse-classic" />
         <div class="collapse-title text-xl font-semibold flex items-center gap-2">
             <i data-lucide="swords" class="w-5 h-5"></i>
-            Classic Enemies
+            Обычные враги
         </div>
         <div class="collapse-content">
             <div class="space-y-3 pt-2">
                 <label class="flex items-center gap-3 cursor-pointer group">
                     <input type="checkbox" id="settingAllEnemies" class="checkbox checkbox-primary">
-                    <span class="text-base-content font-medium group-hover:text-primary transition-colors">All</span>
-                    <div class="tooltip" data-tip="Toggle all enemy types at once.">
+                    <span class="text-base-content font-medium group-hover:text-primary transition-colors">Все</span>
+                    <div class="tooltip" data-tip="Переключить все типы врагов сразу.">
                         <i data-lucide="info" class="w-4 h-4 opacity-50"></i>
                     </div>
                 </label>
@@ -44,8 +44,8 @@
                 <label class="flex items-center gap-3 cursor-pointer group">
                     <input type="checkbox" id="settingNormalEnemy" class="checkbox checkbox-info">
                     <span class="w-3 h-3 rounded-full bg-tier-3"></span>
-                    <span class="text-base-content/80 group-hover:text-base-content transition-colors">Normal</span>
-                    <div class="tooltip" data-tip="Show basic enemies (low threat, easiest to kill).">
+                    <span class="text-base-content/80 group-hover:text-base-content transition-colors">Обычные</span>
+                    <div class="tooltip" data-tip="Показывать обычных врагов (низкая угроза).">
                         <i data-lucide="info" class="w-4 h-4 opacity-50"></i>
                     </div>
                 </label>
@@ -53,8 +53,8 @@
                 <label class="flex items-center gap-3 cursor-pointer group">
                     <input type="checkbox" id="settingEnchantedEnemy" class="checkbox checkbox-secondary">
                     <span class="w-3 h-3 rounded-full bg-tier-4"></span>
-                    <span class="text-base-content/80 group-hover:text-base-content transition-colors">Enchanted</span>
-                    <div class="tooltip" data-tip="Show enchanted enemies (higher tier, better loot).">
+                    <span class="text-base-content/80 group-hover:text-base-content transition-colors">Зачарованные</span>
+                    <div class="tooltip" data-tip="Показывать зачарованных врагов (выше тир, лучше добыча).">
                         <i data-lucide="info" class="w-4 h-4 opacity-50"></i>
                     </div>
                 </label>
@@ -62,8 +62,8 @@
                 <label class="flex items-center gap-3 cursor-pointer group">
                     <input type="checkbox" id="settingMiniBossEnemy" class="checkbox checkbox-warning">
                     <span class="w-3 h-3 rounded-full bg-tier-5"></span>
-                    <span class="text-base-content/80 group-hover:text-base-content transition-colors">Mini-Boss</span>
-                    <div class="tooltip" data-tip="Show mini-bosses (strong enemies, valuable loot).">
+                    <span class="text-base-content/80 group-hover:text-base-content transition-colors">Мини-босс</span>
+                    <div class="tooltip" data-tip="Показывать мини-боссов (сильные враги, ценная добыча).">
                         <i data-lucide="info" class="w-4 h-4 opacity-50"></i>
                     </div>
                 </label>
@@ -71,8 +71,8 @@
                 <label class="flex items-center gap-3 cursor-pointer group">
                     <input type="checkbox" id="settingBossEnemy" class="checkbox checkbox-error">
                     <span class="w-3 h-3 rounded-full bg-tier-7"></span>
-                    <span class="text-base-content/80 group-hover:text-base-content transition-colors">Boss</span>
-                    <div class="tooltip" data-tip="Show boss enemies (very high threat, best loot).">
+                    <span class="text-base-content/80 group-hover:text-base-content transition-colors">Босс</span>
+                    <div class="tooltip" data-tip="Показывать боссов (очень высокая угроза, лучшая добыча).">
                         <i data-lucide="info" class="w-4 h-4 opacity-50"></i>
                     </div>
                 </label>
@@ -80,8 +80,8 @@
                 <div class="border-t border-base-content/10 mt-4 pt-4">
                     <label class="flex items-center gap-3 cursor-pointer group">
                         <input type="checkbox" id="settingShowMinimumHealthEnemies" class="checkbox checkbox-primary">
-                        <span class="text-base-content/80 group-hover:text-base-content transition-colors">Show enemies with minimum HP</span>
-                        <div class="tooltip" data-tip="Only show enemies with HP above the threshold.">
+                        <span class="text-base-content/80 group-hover:text-base-content transition-colors">Показывать врагов с минимальным HP</span>
+                        <div class="tooltip" data-tip="Показывать только врагов с HP выше порога.">
                             <i data-lucide="info" class="w-4 h-4 opacity-50"></i>
                         </div>
                     </label>
@@ -90,15 +90,15 @@
                         <label class="flex items-center gap-3">
                             <input type="number" id="settingTextMinimumHealthEnemies" min="0" placeholder="2100"
                                    class="input input-bordered input-sm w-32 disabled:opacity-50">
-                            <span class="text-base-content/60 text-sm">Minimum HP</span>
+                            <span class="text-base-content/60 text-sm">Минимальный HP</span>
                         </label>
                     </div>
                 </div>
 
                 <label class="flex items-center gap-3 cursor-pointer group mt-2">
                     <input type="checkbox" id="settingShowUnmanagedEnemies" class="checkbox checkbox-primary">
-                    <span class="text-base-content/80 group-hover:text-base-content transition-colors">Show unmanaged IDs</span>
-                    <div class="tooltip" data-tip="Show enemies with unknown/unmanaged IDs (for debugging).">
+                    <span class="text-base-content/80 group-hover:text-base-content transition-colors">Показывать неизвестные ID</span>
+                    <div class="tooltip" data-tip="Показывать врагов с неизвестными ID (для отладки).">
                         <i data-lucide="info" class="w-4 h-4 opacity-50"></i>
                     </div>
                 </label>
@@ -106,21 +106,21 @@
         </div>
     </div>
 
-    <!-- Mists Bosses -->
+    <!-- Боссы Туманов -->
     <div class="collapse collapse-arrow bg-base-200 rounded-xl">
         <input type="checkbox" id="collapse-mists" />
         <div class="collapse-title text-xl font-semibold flex items-center gap-2">
             <i data-lucide="cloud-fog" class="w-5 h-5"></i>
-            Mists Bosses
-            <span class="badge bg-error/20 border-error/40 text-error gap-1"><i data-lucide="construction" class="w-3 h-3"></i>Not implemented yet</span>
+            Боссы Туманов
+            <span class="badge bg-error/20 border-error/40 text-error gap-1"><i data-lucide="construction" class="w-3 h-3"></i>Пока не реализовано</span>
         </div>
         <div class="collapse-content">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2">
                 <label class="flex items-center gap-3 cursor-pointer group">
                     <input type="checkbox" id="settingBossCrystalSpider" class="checkbox checkbox-secondary">
                     <span class="w-3 h-3 rounded-full bg-tier-4"></span>
-                    <span class="text-base-content/80 group-hover:text-base-content transition-colors">Crystal Spider</span>
-                    <div class="tooltip" data-tip="Show Crystal Spider bosses (Mists exclusive).">
+                    <span class="text-base-content/80 group-hover:text-base-content transition-colors">Кристальный паук</span>
+                    <div class="tooltip" data-tip="Показывать Кристальных пауков (только Туманы).">
                         <i data-lucide="info" class="w-4 h-4 opacity-50"></i>
                     </div>
                 </label>
@@ -128,8 +128,8 @@
                 <label class="flex items-center gap-3 cursor-pointer group">
                     <input type="checkbox" id="settingBossFairyDragon" class="checkbox checkbox-secondary">
                     <span class="w-3 h-3 rounded-full bg-tier-4"></span>
-                    <span class="text-base-content/80 group-hover:text-base-content transition-colors">Fairy Dragon</span>
-                    <div class="tooltip" data-tip="Show Fairy Dragon bosses (Mists exclusive).">
+                    <span class="text-base-content/80 group-hover:text-base-content transition-colors">Фейри-дракон</span>
+                    <div class="tooltip" data-tip="Показывать Фейри-драконов (только Туманы).">
                         <i data-lucide="info" class="w-4 h-4 opacity-50"></i>
                     </div>
                 </label>
@@ -137,8 +137,8 @@
                 <label class="flex items-center gap-3 cursor-pointer group">
                     <input type="checkbox" id="settingBossVeilWeaver" class="checkbox checkbox-secondary">
                     <span class="w-3 h-3 rounded-full bg-tier-4"></span>
-                    <span class="text-base-content/80 group-hover:text-base-content transition-colors">Veil Weaver</span>
-                    <div class="tooltip" data-tip="Show Veil Weaver bosses (Mists exclusive).">
+                    <span class="text-base-content/80 group-hover:text-base-content transition-colors">Ткач завесы</span>
+                    <div class="tooltip" data-tip="Показывать Ткачей завесы (только Туманы).">
                         <i data-lucide="info" class="w-4 h-4 opacity-50"></i>
                     </div>
                 </label>
@@ -146,8 +146,8 @@
                 <label class="flex items-center gap-3 cursor-pointer group">
                     <input type="checkbox" id="settingBossGriffin" class="checkbox checkbox-secondary">
                     <span class="w-3 h-3 rounded-full bg-tier-4"></span>
-                    <span class="text-base-content/80 group-hover:text-base-content transition-colors">Griffin</span>
-                    <div class="tooltip" data-tip="Show Griffin bosses (Mists exclusive).">
+                    <span class="text-base-content/80 group-hover:text-base-content transition-colors">Грифон</span>
+                    <div class="tooltip" data-tip="Показывать Грифонов (только Туманы).">
                         <i data-lucide="info" class="w-4 h-4 opacity-50"></i>
                     </div>
                 </label>
@@ -155,28 +155,28 @@
         </div>
     </div>
 
-    <!-- Other Enemies -->
+    <!-- Другие враги -->
     <div class="collapse collapse-arrow bg-base-200 rounded-xl">
         <input type="checkbox" id="collapse-other" />
         <div class="collapse-title text-xl font-semibold flex items-center gap-2">
             <i data-lucide="sparkles" class="w-5 h-5"></i>
-            Other Enemies
-            <span class="badge bg-warning/20 border-warning/40 text-warning gap-1"><i data-lucide="flask-conical" class="w-3 h-3"></i>Not validated yet</span>
+            Другие враги
+            <span class="badge bg-warning/20 border-warning/40 text-warning gap-1"><i data-lucide="flask-conical" class="w-3 h-3"></i>Пока не проверено</span>
         </div>
         <div class="collapse-content">
             <div class="space-y-3 pt-2">
                 <label class="flex items-center gap-3 cursor-pointer group">
                     <input type="checkbox" id="settingAvaloneDrones" class="checkbox checkbox-primary">
-                    <span class="text-base-content/80 group-hover:text-base-content transition-colors">Avalonian Drones</span>
-                    <div class="tooltip" data-tip="Show Avalonian drone enemies (found in Avalonian dungeons).">
+                    <span class="text-base-content/80 group-hover:text-base-content transition-colors">Авалонские дроны</span>
+                    <div class="tooltip" data-tip="Показывать авалонских дронов (в авалонских подземельях).">
                         <i data-lucide="info" class="w-4 h-4 opacity-50"></i>
                     </div>
                 </label>
 
                 <label class="flex items-center gap-3 cursor-pointer group">
                     <input type="checkbox" id="settingShowEventEnemies" class="checkbox checkbox-primary">
-                    <span class="text-base-content/80 group-hover:text-base-content transition-colors">Event Enemies</span>
-                    <div class="tooltip" data-tip="Show special event enemies (seasonal/limited time events).">
+                    <span class="text-base-content/80 group-hover:text-base-content transition-colors">Ивентовые враги</span>
+                    <div class="tooltip" data-tip="Показывать специальных ивентовых врагов.">
                         <i data-lucide="info" class="w-4 h-4 opacity-50"></i>
                     </div>
                 </label>
@@ -184,43 +184,43 @@
         </div>
     </div>
 
-    <!-- Debug -->
+    <!-- Отладка -->
     <div class="collapse collapse-arrow bg-base-200 rounded-xl">
         <input type="checkbox" id="collapse-debug" />
         <div class="collapse-title text-xl font-semibold flex items-center gap-2">
             <i data-lucide="bug" class="w-5 h-5"></i>
-            Debug
+            Отладка
         </div>
         <div class="collapse-content">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2">
                 <label class="flex items-center gap-3 cursor-pointer group">
                     <input type="checkbox" id="settingEnemiesHealthBar" class="checkbox checkbox-primary">
-                    <span class="text-base-content/80 group-hover:text-base-content transition-colors">Show Health Bar</span>
+                    <span class="text-base-content/80 group-hover:text-base-content transition-colors">Показывать полоску здоровья</span>
                 </label>
 
                 <label class="flex items-center gap-3 cursor-pointer group">
                     <input type="checkbox" id="settingEnemiesID" class="checkbox checkbox-primary">
-                    <span class="text-base-content/80 group-hover:text-base-content transition-colors">Show ID</span>
+                    <span class="text-base-content/80 group-hover:text-base-content transition-colors">Показывать ID</span>
                 </label>
 
                 <label class="flex items-center gap-3 cursor-pointer group">
                     <input type="checkbox" id="settingEnemiesTier" class="checkbox checkbox-primary">
-                    <span class="text-base-content/80 group-hover:text-base-content transition-colors">Show Tier</span>
+                    <span class="text-base-content/80 group-hover:text-base-content transition-colors">Показывать тир</span>
                 </label>
 
                 <label class="flex items-center gap-3 cursor-pointer group">
                     <input type="checkbox" id="settingEnemiesName" class="checkbox checkbox-primary">
-                    <span class="text-base-content/80 group-hover:text-base-content transition-colors">Show Name</span>
+                    <span class="text-base-content/80 group-hover:text-base-content transition-colors">Показывать имя</span>
                 </label>
 
                 <label class="flex items-center gap-3 cursor-pointer group md:col-span-2">
                     <input type="checkbox" id="settingEnemiesCategoryBadge" class="checkbox checkbox-primary">
-                    <span class="text-base-content/80 group-hover:text-base-content transition-colors">Show Category Badge</span>
+                    <span class="text-base-content/80 group-hover:text-base-content transition-colors">Показывать категорию</span>
                 </label>
             </div>
 
             <p class="text-xs text-base-content/50 pt-4">
-                Logging options in <a href="/settings" class="text-primary hover:underline">Settings &gt; Debug &amp; Logging</a>
+                Настройки логов в <a href="/settings" class="text-primary hover:underline">Настройки &gt; Отладка и логи</a>
             </p>
         </div>
     </div>
@@ -302,7 +302,7 @@
                 }
             });
 
-            // Classic enemies with "All" checkbox logic
+            // Обычные враги with "All" checkbox logic
             const settingNormalEnemy = document.getElementById("settingNormalEnemy");
             const settingEnchantedEnemy = document.getElementById("settingEnchantedEnemy");
             const settingMiniBossEnemy = document.getElementById("settingMiniBossEnemy");
@@ -400,13 +400,13 @@
             bindClickCheckbox("settingAvaloneDrones");
             bindClickCheckbox("settingShowEventEnemies");
 
-            // Mists bosses
+             // Туманы bosses
             bindClickCheckbox("settingBossCrystalSpider");
             bindClickCheckbox("settingBossFairyDragon");
             bindClickCheckbox("settingBossVeilWeaver");
             bindClickCheckbox("settingBossGriffin");
 
-            // Debug options
+           // Отладка options
             bindClickCheckbox("settingEnemiesHealthBar");
             bindClickCheckbox("settingEnemiesID");
             bindClickCheckbox("settingEnemiesTier");
