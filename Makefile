@@ -5,7 +5,6 @@
 #   - GNU Make, bash (Git Bash on Windows)
 #   - Go 1.26+
 #   - Node 20+
-#   - Docker (only needed to build the non-native platform locally)
 #   - git, gh, git-cliff, golangci-lint (see `make install-tools`)
 # ============================================================================
 
@@ -48,7 +47,7 @@ help: ## Display help
 	@echo "  assets            Prepare embedded assets (CSS, vendors, gzip data)"
 	@echo "  restore-assets    Restore source tree after assets step"
 	@echo "  build-linux       Build Linux binary (native on Linux, Docker elsewhere)"
-	@echo "  build-windows     Build Windows .exe (native on Windows, Docker elsewhere)"
+	@echo "  build-windows     Build Windows .exe"
 	@echo "  build-windows-desktop Build Windows no-console desktop-style .exe"
 	@echo "  all-in-one        assets + both binaries + READMEs + checksums + restore"
 	@echo ""
@@ -179,22 +178,12 @@ else
 endif
 
 build-windows: | $(DIST) ## Build Windows .exe
-ifneq (,$(findstring mingw,$(HOST_OS))$(findstring msys,$(HOST_OS)))
-	CGO_ENABLED=1 GOOS=windows GOARCH=amd64 \
+CGO_ENABLED=0 GOOS=windows GOARCH=amd64 \
 		go build -ldflags="$(LDFLAGS)" -o $(DIST)/OpenRadar-windows-amd64.exe ./cmd/radar
-else
-	docker build -f Dockerfile.windows -o $(DIST)/ \
-		--build-arg VERSION=$(VERSION) --build-arg BUILD_TIME=$(BUILD_TIME) .
-endif
 
 build-windows-desktop: | $(DIST) ## Build Windows no-console desktop-style .exe
-ifneq (,$(findstring mingw,$(HOST_OS))$(findstring msys,$(HOST_OS)))
-	CGO_ENABLED=1 GOOS=windows GOARCH=amd64 \
+CGO_ENABLED=0 GOOS=windows GOARCH=amd64 \
 		go build -ldflags="$(LDFLAGS) -H=windowsgui -X main.DefaultDesktop=true" -o $(DIST)/OpenRadar-windows-desktop-amd64.exe ./cmd/radar
-else
-	docker build -f Dockerfile.windows -o $(DIST)/ \
-		--build-arg VERSION=$(VERSION) --build-arg BUILD_TIME=$(BUILD_TIME) .
-endif
 
 readmes: | $(DIST) ## Generate platform-specific README files
 	npx tsx tools/generate-readmes.ts --output-dir=$(DIST) --version=$(VERSION)

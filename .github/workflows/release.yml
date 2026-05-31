@@ -124,21 +124,26 @@ jobs:
         run: goversioninfo -64
         working-directory: cmd/radar
 
-      - name: Build Windows binary with embedded resources
+      - name: Build Windows binaries with embedded resources
         shell: bash
         env:
-          CGO_ENABLED: "1"
+          CGO_ENABLED: "0"
         run: |
           BUILD_TIME=$(date -u +%Y-%m-%dT%H:%M:%SZ)
           mkdir -p dist
           go build \
             -ldflags="-s -w -X main.Version=${VERSION} -X main.BuildTime=${BUILD_TIME}" \
             -o dist/OpenRadar-windows-amd64.exe ./cmd/radar
+          go build \
+            -ldflags="-s -w -H=windowsgui -X main.Version=${VERSION} -X main.BuildTime=${BUILD_TIME} -X main.DefaultDesktop=true" \
+            -o dist/OpenRadar-windows-desktop-amd64.exe ./cmd/radar
 
       - uses: actions/upload-artifact@v7
         with:
           name: windows-enhanced
-          path: dist/OpenRadar-windows-amd64.exe
+          path: |
+            dist/OpenRadar-windows-amd64.exe
+            dist/OpenRadar-windows-desktop-amd64.exe
           retention-days: 1
 
   release:
@@ -163,9 +168,9 @@ jobs:
           name: windows-enhanced
           path: dist
 
-      - name: Regenerate checksums (Windows .exe changed)
+      - name: Regenerate checksums (Windows .exe files changed)
         working-directory: dist
-        run: sha256sum OpenRadar-linux-amd64 OpenRadar-windows-amd64.exe README-linux.txt README-windows.txt > checksums-sha256.txt
+        run: sha256sum OpenRadar-linux-amd64 OpenRadar-windows-amd64.exe OpenRadar-windows-desktop-amd64.exe README-linux.txt README-windows.txt > checksums-sha256.txt
 
       - name: Generate release notes
         uses: orhun/git-cliff-action@v4
@@ -185,6 +190,7 @@ jobs:
             --notes-file dist/RELEASE.md \
             dist/OpenRadar-linux-amd64 \
             dist/OpenRadar-windows-amd64.exe \
+            dist/OpenRadar-windows-desktop-amd64.exe \
             dist/README-linux.txt \
             dist/README-windows.txt \
             dist/checksums-sha256.txt
